@@ -1,0 +1,55 @@
+﻿@page "/"
+
+<PageTitle>Clínica Dental - Inicio</PageTitle>
+
+<div class="text-center mb-5">
+    <h1 class="display-4 fw-bold text-primary">🦷 Clínica Dental Salud</h1>
+    <p class="lead text-muted">Sistema Integral de Gestión de Citas y Pacientes</p>
+</div>
+
+<div class="row mt-4">
+    @* TARJETA CITAS *@
+    <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow border-0 hover-effect">
+            <div class="card-body text-center">
+                <h1 class="display-1 text-primary">📅</h1>
+                <h3 class="card-title">Citas</h3>
+                <p class="card-text">Agenda, revisa y administra las citas del día.</p>
+                <a href="citas" class="btn btn-primary w-100">Ir a la Agenda</a>
+            </div>
+        </div>
+    </div>
+
+    @* TARJETA PACIENTES *@
+    <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow border-0 hover-effect">
+            <div class="card-body text-center">
+                <h1 class="display-1 text-success">👥</h1>
+                <h3 class="card-title">Pacientes</h3>
+                <p class="card-text">Gestiona el directorio de pacientes e historial.</p>
+                <a href="pacientes" class="btn btn-outline-success w-100">Ver Pacientes</a>
+            </div>
+        </div>
+    </div>
+
+    @* TARJETA DENTISTAS *@
+    <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow border-0 hover-effect">
+            <div class="card-body text-center">
+                <h1 class="display-1 text-info">🥼</h1>
+                <h3 class="card-title">Dentistas</h3>
+                <p class="card-text">Administra el personal médico y especialistas.</p>
+                <a href="dentistas" class="btn btn-outline-info w-100">Ver Dentistas</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Un pequeño estilo extra para que las tarjetas se eleven al pasar el mouse */
+    .hover-effect:hover {
+        transform: translateY(-5px);
+        transition: transform 0.3s;
+        cursor: pointer;
+    }
+</style>

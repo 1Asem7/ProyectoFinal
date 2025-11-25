@@ -1,0 +1,60 @@
+﻿@page "/pacientes/nuevo"
+@using ProyectoFinal.Data
+@using ProyectoFinal.Models
+@inject ClinicaContext Contexto
+@inject NavigationManager Navegacion
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Registrar Nuevo Paciente</h4>
+            </div>
+            <div class="card-body">
+                <EditForm Model="paciente" OnValidSubmit="Guardar">
+                    <DataAnnotationsValidator />
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nombre</label>
+                            <InputText class="form-control" @bind-Value="paciente.Nombre" placeholder="Ej: Maria" />
+                            <ValidationMessage For="@(() => paciente.Nombre)" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Apellido</label>
+                            <InputText class="form-control" @bind-Value="paciente.Apellido" placeholder="Ej: Lopez" />
+                            <ValidationMessage For="@(() => paciente.Apellido)" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <InputText class="form-control" @bind-Value="paciente.Email" placeholder="correo@ejemplo.com" />
+                        <ValidationMessage For="@(() => paciente.Email)" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Teléfono</label>
+                        <InputText class="form-control" @bind-Value="paciente.Telefono" placeholder="555-0000" />
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="/pacientes" class="btn btn-secondary me-md-2">Cancelar</a>
+                        <button type="submit" class="btn btn-success">Guardar Paciente</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private Paciente paciente = new Paciente();
+
+    private async Task Guardar()
+    {
+        Contexto.Pacientes.Add(paciente);
+        await Contexto.SaveChangesAsync();
+        Navegacion.NavigateTo("/pacientes");
+    }
+}

@@ -1,0 +1,71 @@
+﻿@page "/pacientes/editar/{Id:int}"
+@using ProyectoFinal.Data
+@using ProyectoFinal.Models
+@inject ClinicaContext Contexto
+@inject NavigationManager Navegacion
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h4 class="mb-0">Editar Paciente</h4>
+            </div>
+            <div class="card-body">
+                @if (paciente == null)
+                {
+                    <p>Cargando...</p>
+                }
+                else
+                {
+                    <EditForm Model="paciente" OnValidSubmit="Guardar">
+                        <DataAnnotationsValidator />
+
+                        @* Reutilizamos la misma estructura del formulario de Nuevo *@
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label>Nombre</label>
+                                <InputText class="form-control" @bind-Value="paciente.Nombre" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Apellido</label>
+                                <InputText class="form-control" @bind-Value="paciente.Apellido" />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Email</label>
+                            <InputText class="form-control" @bind-Value="paciente.Email" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Teléfono</label>
+                            <InputText class="form-control" @bind-Value="paciente.Telefono" />
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="/pacientes" class="btn btn-secondary me-md-2">Cancelar</a>
+                            <button type="submit" class="btn btn-warning">Actualizar Datos</button>
+                        </div>
+                    </EditForm>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private Paciente? paciente;
+
+    protected override async Task OnInitializedAsync()
+    {
+        paciente = await Contexto.Pacientes.FindAsync(Id);
+    }
+
+    private async Task Guardar()
+    {
+        Contexto.Pacientes.Update(paciente!);
+        await Contexto.SaveChangesAsync();
+        Navegacion.NavigateTo("/pacientes");
+    }
+}

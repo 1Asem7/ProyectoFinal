@@ -1,0 +1,84 @@
+﻿@page "/dentistas"
+@using Microsoft.EntityFrameworkCore
+@using ProyectoFinal.Data
+@using ProyectoFinal.Models
+@inject ClinicaContext Contexto
+@inject NavigationManager Navegacion
+@inject IJSRuntime JS
+
+<h3>Lista de Dentistas</h3>
+
+<div class="mb-3">
+    <a href="/dentistas/nuevo" class="btn btn-success">
+        + Agregar Nuevo Dentista
+    </a>
+</div>
+
+@if (misDentistas == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Especialidad</th>
+                <th>Email</th>
+                <th>Acciones</th> 
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var dentista in misDentistas)
+            {
+                <tr>
+                    <td>@dentista.Nombre</td>
+                    <td>@dentista.Apellido</td>
+                    <td>@dentista.Especialidad</td>
+                    <td>@dentista.EmailProfesional</td>
+                    <td>
+                        @* BOTÓN EDITAR: Nos lleva a la pagina de editar pasando el ID *@
+                        <a href="/dentistas/editar/@dentista.IdDentista" class="btn btn-warning btn-sm">
+                            Editar
+                        </a>
+
+                        @* BOTÓN BORRAR: Ejecuta la función de abajo *@
+                        <button class="btn btn-danger btn-sm ms-2" @onclick="() => BorrarDentista(dentista)">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Dentista>? misDentistas;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarDentistas();
+    }
+
+    private async Task CargarDentistas()
+    {
+        misDentistas = await Contexto.Dentistas.ToListAsync();
+    }
+
+    // --- FUNCIÓN PARA BORRAR ---
+    private async Task BorrarDentista(Dentista dentista)
+    {
+        // Preguntamos con una ventanita simple de confirmación
+        bool confirmado = await JS.InvokeAsync<bool>("confirm", $"¿Estás seguro de borrar a {dentista.Nombre}?");
+
+        if (confirmado)
+        {
+            Contexto.Dentistas.Remove(dentista);
+            await Contexto.SaveChangesAsync();
+            await CargarDentistas(); // Recargamos la lista para que desaparezca
+        }
+    }
+}

@@ -1,0 +1,65 @@
+﻿@page "/citas"
+@using Microsoft.EntityFrameworkCore
+@using ProyectoFinal.Data
+@using ProyectoFinal.Models
+@inject ClinicaContext Contexto
+
+<h3>Agenda de Citas</h3>
+
+<div class="mb-3">
+    <a href="/citas/nueva" class="btn btn-primary">+ Agendar Cita</a>
+</div>
+
+@if (misCitas == null)
+{
+    <p><em>Cargando agenda...</em></p>
+}
+else if (misCitas.Count == 0)
+{
+    <p>No hay citas programadas.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Fecha/Hora</th>
+                <th>Paciente</th>
+                <th>Dentista</th>
+                <th>Motivo</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in misCitas)
+            {
+                <tr>
+                    <td>@c.FechaHora.ToString("dd/MM/yyyy HH:mm")</td>
+
+                    @* Aquí mostramos los nombres gracias al Include *@
+                    <td>@c.Paciente?.Nombre @c.Paciente?.Apellido</td>
+                    <td>@c.Dentista?.Nombre (@c.Dentista?.Especialidad)</td>
+
+                    <td>@c.MotivoConsulta</td>
+                    <td>
+                        <span class="badge bg-info text-dark">@c.Estado</span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Cita>? misCitas;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // IMPORTANTE: Usamos .Include para traer los datos de las tablas relacionadas
+        misCitas = await Contexto.Citas
+            .Include(c => c.Paciente)
+            .Include(c => c.Dentista)
+            .OrderBy(c => c.FechaHora) // Ordenar por fecha
+            .ToListAsync();
+    }
+}

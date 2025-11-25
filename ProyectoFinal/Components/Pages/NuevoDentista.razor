@@ -1,0 +1,71 @@
+﻿@page "/dentistas/nuevo"
+@using Microsoft.EntityFrameworkCore
+@using ProyectoFinal.Data
+@using ProyectoFinal.Models
+@inject ClinicaContext Contexto
+@inject NavigationManager Navegacion
+
+<h3>Registrar Nuevo Dentista</h3>
+
+<div class="row">
+    <div class="col-md-6">
+        @* El EditForm es el componente mágico de Blazor para formularios *@
+        <EditForm Model="dentista" OnValidSubmit="GuardarDentista">
+
+            @* Esto activa las validaciones automáticas (mensajes rojos) *@
+            <DataAnnotationsValidator />
+
+            <div class="mb-3">
+                <label>Nombre:</label>
+                <InputText class="form-control" @bind-Value="dentista.Nombre" />
+                <ValidationMessage For="@(() => dentista.Nombre)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Apellido:</label>
+                <InputText class="form-control" @bind-Value="dentista.Apellido" />
+                <ValidationMessage For="@(() => dentista.Apellido)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Especialidad:</label>
+                <InputText class="form-control" @bind-Value="dentista.Especialidad" />
+                <ValidationMessage For="@(() => dentista.Especialidad)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Email Profesional:</label>
+                <InputText class="form-control" @bind-Value="dentista.EmailProfesional" />
+                <ValidationMessage For="@(() => dentista.EmailProfesional)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Contraseña:</label>
+                <InputText type="password" class="form-control" @bind-Value="dentista.Password" />
+                <ValidationMessage For="@(() => dentista.Password)" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Guardar Dentista</button>
+            <a href="/dentistas" class="btn btn-secondary">Cancelar</a>
+
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    // Creamos un objeto vacío para llenarlo con el formulario
+    private Dentista dentista = new Dentista();
+
+    // Esta función solo se ejecuta si el formulario es VÁLIDO (cumple los requirements)
+    private async Task GuardarDentista()
+    {
+        // 1. Agregamos al contexto (en memoria)
+        Contexto.Dentistas.Add(dentista);
+
+        // 2. Guardamos los cambios en la BD real
+        await Contexto.SaveChangesAsync();
+
+        // 3. Nos regresamos a la lista para ver al nuevo dentista
+        Navegacion.NavigateTo("/dentistas");
+    }
+}

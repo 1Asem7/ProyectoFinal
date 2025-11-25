@@ -1,0 +1,78 @@
+﻿@page "/pacientes"
+@using Microsoft.EntityFrameworkCore
+@using ProyectoFinal.Data
+@using ProyectoFinal.Models
+@inject ClinicaContext Contexto
+@inject IJSRuntime JS
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3>👥 Listado de Pacientes</h3>
+    <a href="/pacientes/nuevo" class="btn btn-success shadow-sm">
+        <span class="bi bi-person-plus-fill"></span> Nuevo Paciente
+    </a>
+</div>
+
+@if (misPacientes == null)
+{
+    <div class="alert alert-info">Cargando datos...</div>
+}
+else
+{
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover table-striped mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Nombre Completo</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in misPacientes)
+                    {
+                        <tr>
+                            <td>@p.Nombre @p.Apellido</td>
+                            <td>@p.Email</td>
+                            <td>@p.Telefono</td>
+                            <td class="text-center">
+                                <a href="/pacientes/editar/@p.IdPaciente" class="btn btn-outline-warning btn-sm me-2" title="Editar">
+                                    ✏️
+                                </a>
+                                <button class="btn btn-outline-danger btn-sm" title="Eliminar" @onclick="() => BorrarPaciente(p)">
+                                    🗑️
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@code {
+    private List<Paciente>? misPacientes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarPacientes();
+    }
+
+    private async Task CargarPacientes()
+    {
+        misPacientes = await Contexto.Pacientes.ToListAsync();
+    }
+
+    private async Task BorrarPaciente(Paciente p)
+    {
+        bool confirmado = await JS.InvokeAsync<bool>("confirm", $"¿Eliminar a {p.Nombre}?");
+        if (confirmado)
+        {
+            Contexto.Pacientes.Remove(p);
+            await Contexto.SaveChangesAsync();
+            await CargarPacientes();
+        }
+    }
+}

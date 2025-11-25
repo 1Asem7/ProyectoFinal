@@ -1,0 +1,73 @@
+﻿@page "/dentistas/editar/{Id:int}"
+@using Microsoft.EntityFrameworkCore
+@using ProyectoFinal.Data
+@using ProyectoFinal.Models
+@inject ClinicaContext Contexto
+@inject NavigationManager Navegacion
+
+<h3>Editar Dentista</h3>
+
+@if (dentista == null)
+{
+    <p><em>Cargando datos...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-6">
+            <EditForm Model="dentista" OnValidSubmit="GuardarCambios">
+                <DataAnnotationsValidator />
+
+                <div class="mb-3">
+                    <label>Nombre:</label>
+                    <InputText class="form-control" @bind-Value="dentista.Nombre" />
+                    <ValidationMessage For="@(() => dentista.Nombre)" />
+                </div>
+
+                <div class="mb-3">
+                    <label>Apellido:</label>
+                    <InputText class="form-control" @bind-Value="dentista.Apellido" />
+                    <ValidationMessage For="@(() => dentista.Apellido)" />
+                </div>
+
+                <div class="mb-3">
+                    <label>Especialidad:</label>
+                    <InputText class="form-control" @bind-Value="dentista.Especialidad" />
+                    <ValidationMessage For="@(() => dentista.Especialidad)" />
+                </div>
+
+                <div class="mb-3">
+                    <label>Email:</label>
+                    <InputText class="form-control" @bind-Value="dentista.EmailProfesional" />
+                    <ValidationMessage For="@(() => dentista.EmailProfesional)" />
+                </div>
+
+                @* Ocultamos la contraseña para no editarla aquí por seguridad, o podrías dejarla *@
+
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                <a href="/dentistas" class="btn btn-secondary">Cancelar</a>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; } // Recibimos el ID desde la URL
+
+    private Dentista? dentista;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Buscamos al dentista en la BD usando el ID
+        dentista = await Contexto.Dentistas.FindAsync(Id);
+    }
+
+    private async Task GuardarCambios()
+    {
+        // Actualizamos y guardamos
+        Contexto.Dentistas.Update(dentista!);
+        await Contexto.SaveChangesAsync();
+        Navegacion.NavigateTo("/dentistas");
+    }
+}
