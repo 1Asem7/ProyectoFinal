@@ -1,0 +1,107 @@
+﻿@page "/citas/editar/{Id:int}"
+@using Microsoft.EntityFrameworkCore
+@using ProyectoFinal.Data
+@using ProyectoFinal.Models
+@inject ClinicaContext Contexto
+@inject NavigationManager Navegacion
+
+<h3>✏️ Editar Cita</h3>
+
+@if (cita == null)
+{
+    <div class="alert alert-info">Cargando datos de la cita...</div>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-6">
+            <EditForm Model="cita" OnValidSubmit="GuardarCambios">
+                <DataAnnotationsValidator />
+
+                
+                <div class="mb-3">
+                    <label>Paciente:</label>
+                    <InputSelect class="form-select" @bind-Value="cita.IdPaciente">
+                        <option value="">-- Seleccione un Paciente --</option>
+                        @foreach (var p in listaPacientes)
+                        {
+                            <option value="@p.IdPaciente">@p.Nombre @p.Apellido</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => cita.IdPaciente)" />
+                </div>
+
+               
+                <div class="mb-3">
+                    <label>Dentista:</label>
+                    <InputSelect class="form-select" @bind-Value="cita.IdDentista">
+                        <option value="">-- Seleccione un Dentista --</option>
+                        @foreach (var d in listaDentistas)
+                        {
+                            <option value="@d.IdDentista">@d.Nombre @d.Apellido - @d.Especialidad</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => cita.IdDentista)" />
+                </div>
+
+                
+                <div class="mb-3">
+                    <label>Fecha y Hora:</label>
+                    <InputDate Type="InputDateType.DateTimeLocal" class="form-control" @bind-Value="cita.FechaHora" />
+                    <ValidationMessage For="@(() => cita.FechaHora)" />
+                </div>
+
+               
+                <div class="mb-3">
+                    <label>Motivo de Consulta:</label>
+                    <InputTextArea class="form-control" @bind-Value="cita.MotivoConsulta" />
+                    <ValidationMessage For="@(() => cita.MotivoConsulta)" />
+                </div>
+
+               
+                <div class="mb-3">
+                    <label>Estado:</label>
+                    <InputSelect class="form-select" @bind-Value="cita.Estado">
+                        <option value="Programada">Programada</option>
+                        <option value="Completada">Completada</option>
+                        <option value="Cancelada">Cancelada</option>
+                    </InputSelect>
+                </div>
+
+                <button type="submit" class="btn btn-warning">Guardar Cambios</button>
+                <a href="/citas" class="btn btn-secondary">Cancelar</a>
+
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public int Id { get; set; } 
+
+    private Cita? cita;
+
+    
+    private List<Paciente> listaPacientes = new List<Paciente>();
+    private List<Dentista> listaDentistas = new List<Dentista>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+        listaPacientes = await Contexto.Pacientes.ToListAsync();
+        listaDentistas = await Contexto.Dentistas.ToListAsync();
+
+      
+        cita = await Contexto.Citas.FindAsync(Id);
+    }
+
+    private async Task GuardarCambios()
+    {
+       
+        Contexto.Citas.Update(cita!);
+        await Contexto.SaveChangesAsync();
+
+        
+        Navegacion.NavigateTo("/citas");
+    }
+}

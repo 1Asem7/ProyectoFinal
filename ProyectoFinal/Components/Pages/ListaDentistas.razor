@@ -39,12 +39,12 @@ else
                     <td>@dentista.Especialidad</td>
                     <td>@dentista.EmailProfesional</td>
                     <td>
-                        @* BOTÓN EDITAR: Nos lleva a la pagina de editar pasando el ID *@
+                        @* Nos lleva a la pagina de editar pasando el ID *@
                         <a href="/dentistas/editar/@dentista.IdDentista" class="btn btn-warning btn-sm">
                             Editar
                         </a>
 
-                        @* BOTÓN BORRAR: Ejecuta la función de abajo *@
+                        @* BOTÓN BORRAR: *@
                         <button class="btn btn-danger btn-sm ms-2" @onclick="() => BorrarDentista(dentista)">
                             Eliminar
                         </button>

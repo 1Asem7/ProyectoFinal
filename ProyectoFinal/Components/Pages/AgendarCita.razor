@@ -5,14 +5,14 @@
 @inject ClinicaContext Contexto
 @inject NavigationManager Navegacion
 
-<h3>📅 Agendar Nueva Cita</h3>
+<h3> Agendar Nueva Cita</h3>
 
 <div class="row">
     <div class="col-md-6">
         <EditForm Model="cita" OnValidSubmit="GuardarCita">
             <DataAnnotationsValidator />
 
-            @* 1. SELECCIONAR PACIENTE *@
+            
             <div class="mb-3">
                 <label>Paciente:</label>
                 <InputSelect class="form-select" @bind-Value="cita.IdPaciente">
@@ -25,7 +25,7 @@
                 <ValidationMessage For="@(() => cita.IdPaciente)" />
             </div>
 
-            @* 2. SELECCIONAR DENTISTA *@
+           
             <div class="mb-3">
                 <label>Dentista:</label>
                 <InputSelect class="form-select" @bind-Value="cita.IdDentista">
@@ -38,14 +38,14 @@
                 <ValidationMessage For="@(() => cita.IdDentista)" />
             </div>
 
-            @* 3. FECHA Y HORA *@
+            
             <div class="mb-3">
                 <label>Fecha y Hora:</label>
                 <InputDate Type="InputDateType.DateTimeLocal" class="form-control" @bind-Value="cita.FechaHora" />
                 <ValidationMessage For="@(() => cita.FechaHora)" />
             </div>
 
-            @* 4. MOTIVO *@
+            
             <div class="mb-3">
                 <label>Motivo de Consulta:</label>
                 <InputTextArea class="form-control" @bind-Value="cita.MotivoConsulta" />
@@ -60,15 +60,15 @@
 </div>
 
 @code {
-    private Cita cita = new Cita { FechaHora = DateTime.Now }; // Inicializamos con fecha de hoy
+    private Cita cita = new Cita { FechaHora = DateTime.Now }; 
 
-    // Listas para llenar los Dropdowns
+    
     private List<Paciente> listaPacientes = new List<Paciente>();
     private List<Dentista> listaDentistas = new List<Dentista>();
 
     protected override async Task OnInitializedAsync()
     {
-        // Cargamos los datos para que el usuario pueda elegir
+        
         listaPacientes = await Contexto.Pacientes.ToListAsync();
         listaDentistas = await Contexto.Dentistas.ToListAsync();
     }

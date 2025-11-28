@@ -6,7 +6,7 @@
 @inject IJSRuntime JS
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h3>👥 Listado de Pacientes</h3>
+    <h3> Listado de Pacientes</h3>
     <a href="/pacientes/nuevo" class="btn btn-success shadow-sm">
         <span class="bi bi-person-plus-fill"></span> Nuevo Paciente
     </a>
@@ -38,10 +38,10 @@ else
                             <td>@p.Telefono</td>
                             <td class="text-center">
                                 <a href="/pacientes/editar/@p.IdPaciente" class="btn btn-outline-warning btn-sm me-2" title="Editar">
-                                    ✏️
+                                    Editar
                                 </a>
                                 <button class="btn btn-outline-danger btn-sm" title="Eliminar" @onclick="() => BorrarPaciente(p)">
-                                    🗑️
+                                    Borrar
                                 </button>
                             </td>
                         </tr>
